@@ -1,3 +1,4 @@
+/*
 package com.utn.udee.model;
 
 import lombok.Data;
@@ -9,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Meter {
 
+
     private Integer id;
     private String serialNumber;
     private String password;
@@ -18,3 +20,4 @@ public class Meter {
     private List<Measurement> measurments;
     private List<Invoice> invoices;
 }
+*/

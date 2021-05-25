@@ -1,3 +1,4 @@
+/*
 package com.utn.udee.model;
 
 import lombok.Data;
@@ -6,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
+
 @NoArgsConstructor
 public class Invoice {
 
@@ -18,3 +20,4 @@ public class Invoice {
     private LocalDateTime finalTime;
     private TariffType tariffType;
 }
+*/

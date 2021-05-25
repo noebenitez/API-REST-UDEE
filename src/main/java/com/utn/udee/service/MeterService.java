@@ -1,3 +1,4 @@
+/*
 package com.utn.udee.service;
 
 import com.utn.udee.repository.MeterRepository;
@@ -7,6 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeterService {
 
-    @Autowired
     private MeterRepository meterRepository;
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.utn.udee.model;
 
 import lombok.Data;
@@ -15,3 +16,4 @@ public class Measurement {
     private LocalDateTime datetime;
     private Invoice invoice;
 }
+*/

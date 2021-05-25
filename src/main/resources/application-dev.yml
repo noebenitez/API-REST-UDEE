@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3333/udee
+    url: jdbc:mysql://localhost:3306/udee?serverTimezone=UTC
     username: root
     password: root
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
+      dialect: org.hibernate.dialect.MySQLBDialect
+      driverClassName: com.mysql.cj.jdbc.Driver
+    database: mysql
