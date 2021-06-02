@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.utn.udee.utils.Constants.*;
 
+
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     ObjectMapper objectMapper;
@@ -28,7 +29,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         this.objectMapper = new ObjectMapper();
     }
 
-    /**
+
+/**
      * Internal JWT Filter to check if the request is valid
      *
      * @param request
@@ -37,6 +39,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
      * @throws ServletException
      * @throws IOException
      */
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -60,23 +63,26 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     }
 
 
-    /**
+/**
      * Method to validate if the token is valid
      *
      * @param request
      * @return
      */
 
+
     private Claims validateToken(HttpServletRequest request) {
         String jwtToken = request.getHeader(JWT_HEADER).replace(JWT_PREFIX, "");
         return Jwts.parser().setSigningKey(JWT_SECRET.getBytes()).parseClaimsJws(jwtToken).getBody();
     }
 
-    /**
+
+/**
      * Authentication Method to authorize through Spring
      *
      * @param claims
      */
+
     private void setUpSpringAuthentication(Claims claims) {
         try {
             List<String> authorities = (List) claims.get("authorities");
@@ -99,3 +105,4 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         return true;
     }
 }
+

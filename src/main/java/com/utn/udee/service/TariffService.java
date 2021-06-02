@@ -1,6 +1,8 @@
 package com.utn.udee.service;
 
+import com.utn.udee.exception.AdressNotExistsException;
 import com.utn.udee.exception.TariffExistsException;
+import com.utn.udee.exception.TariffNotExistsException;
 import com.utn.udee.model.Adress;
 import com.utn.udee.model.Tariff;
 import com.utn.udee.repository.TariffRepository;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -38,12 +41,24 @@ public class TariffService {
         return tariffRepository.findById(7).get().getAdresses();
     }
 
-    public void deleteById(Integer id) {
-        tariffRepository.deleteById(id);
+    public void deleteById(Integer id) throws TariffNotExistsException {
+        if(tariffRepository.existsById(id)){
+            tariffRepository.deleteById(id);
+        }else{
+            throw new TariffNotExistsException();
+        }
     }
 
-    public Tariff getById(Integer id) {
+    public Tariff getById(Integer id) throws TariffNotExistsException {
         return tariffRepository.findById(id)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+                .orElseThrow(TariffNotExistsException::new);
+    }
+
+    public void update(Integer id, Tariff newTariff) throws TariffNotExistsException {
+        Tariff tariff = getById(id);
+        tariff.setTariff(newTariff.getTariff());
+        tariff.setTariffType(newTariff.getTariffType());
+        tariff.setAdresses(newTariff.getAdresses());
+        tariffRepository.save(tariff);
     }
 }

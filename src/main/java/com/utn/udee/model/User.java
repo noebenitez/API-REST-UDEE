@@ -1,5 +1,6 @@
 package com.utn.udee.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "userType", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Client.class, name = "CLIENT"),
