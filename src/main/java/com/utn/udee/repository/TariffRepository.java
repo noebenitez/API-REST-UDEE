@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface TariffRepository extends JpaRepository<Tariff, Integer> {
 
     Page<Tariff> findAll(Pageable pageable);
+
 }

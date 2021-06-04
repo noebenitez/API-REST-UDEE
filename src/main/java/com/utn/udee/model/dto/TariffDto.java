@@ -1,20 +1,18 @@
 package com.utn.udee.model.dto;
-
+import com.utn.udee.model.TariffType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class UserDto {
+public class TariffDto {
 
     private Integer id;
-    private String dni;
-    private String firstname;
-    private String lastname;
-    private String username;
+    private Float tariff;
+    private TariffType tariffType;
 
 }

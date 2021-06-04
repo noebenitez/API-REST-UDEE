@@ -3,18 +3,12 @@ package com.utn.udee.service;
 import com.utn.udee.exception.UserExistsException;
 import com.utn.udee.exception.UserNotExistsException;
 import com.utn.udee.model.User;
-import com.utn.udee.model.UserType;
+import com.utn.udee.model.dto.UserDtoI;
 import com.utn.udee.repository.UserRepository;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.codec.DecodingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -40,8 +34,8 @@ public class UserService {
         return userRepository.findByUsernameAndPassword(username, password);
     }
 
-    public Page<User> getAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<UserDtoI> getAll(Pageable pageable) {
+        return userRepository.findAllDto(pageable);
     }
 
     public User getById(Integer id) throws UserNotExistsException {

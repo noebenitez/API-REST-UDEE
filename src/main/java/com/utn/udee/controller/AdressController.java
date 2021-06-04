@@ -3,10 +3,12 @@ package com.utn.udee.controller;
 import com.utn.udee.exception.AdressExistsException;
 import com.utn.udee.exception.AdressNotExistsException;
 import com.utn.udee.model.Adress;
+import com.utn.udee.model.dto.AdressDto;
 import com.utn.udee.service.AdressService;
 import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ public class AdressController {
 
     @Autowired
     private AdressService adressService;
+    @Autowired
+    private ConversionService conversionService;
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
@@ -35,9 +39,10 @@ public class AdressController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping
-    public ResponseEntity<List<Adress>> getAll(Pageable pageable){
+    public ResponseEntity<List<AdressDto>> getAll(Pageable pageable){
         Page page = adressService.getAll(pageable);
-        return ResponseEntityMaker.response(page.getContent(), page);
+        Page pageDto = page.map(adress -> conversionService.convert(adress, AdressDto.class));
+        return ResponseEntityMaker.response(pageDto.getContent(), pageDto);
     }
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")

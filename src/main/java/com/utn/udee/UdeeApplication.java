@@ -1,6 +1,7 @@
 package com.utn.udee;
 
 import com.utn.udee.filter.JWTAuthorizationFilter;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
@@ -34,3 +35,5 @@ public class UdeeApplication {
 		}
 	}
 }
+
+

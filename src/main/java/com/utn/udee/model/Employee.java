@@ -3,7 +3,6 @@ package com.utn.udee.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Data

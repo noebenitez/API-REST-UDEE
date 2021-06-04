@@ -1,12 +1,12 @@
 package com.utn.udee.repository;
 
 import com.utn.udee.model.User;
+import com.utn.udee.model.dto.UserDtoI;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -15,6 +15,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByDni(String dni);
 
-    Page<User> findAll(Pageable pageable);
+    @Query(value = "SELECT * from users",
+            countQuery = "select count(*) from users",
+            nativeQuery = true)
+    Page<UserDtoI> findAllDto(Pageable pageable);
 
 }

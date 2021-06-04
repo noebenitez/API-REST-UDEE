@@ -1,28 +1,26 @@
 package com.utn.udee.service;
 
-import com.utn.udee.exception.AdressNotExistsException;
 import com.utn.udee.exception.TariffExistsException;
 import com.utn.udee.exception.TariffNotExistsException;
 import com.utn.udee.model.Adress;
 import com.utn.udee.model.Tariff;
 import com.utn.udee.repository.TariffRepository;
-import com.utn.udee.utils.EntityURLBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 public class TariffService {
 
+    private final TariffRepository tariffRepository;
+
     @Autowired
-    private TariffRepository tariffRepository;
+    public TariffService(TariffRepository tariffRepository){
+        this.tariffRepository = tariffRepository;
+    }
 
     public Tariff add(Tariff tariff) throws TariffExistsException {
         //Se va a cambiar por verificar si no hay una tarifa con mismo tipo y valor
@@ -35,10 +33,6 @@ public class TariffService {
 
     public Page<Tariff> getAll(Pageable pageable) {
         return tariffRepository.findAll(pageable);
-    }
-
-    public List<Adress> getList() {
-        return tariffRepository.findById(7).get().getAdresses();
     }
 
     public void deleteById(Integer id) throws TariffNotExistsException {
@@ -60,5 +54,9 @@ public class TariffService {
         tariff.setTariffType(newTariff.getTariffType());
         tariff.setAdresses(newTariff.getAdresses());
         tariffRepository.save(tariff);
+    }
+
+    public List<Adress> getAdressesByTariff(Integer id) {
+        return tariffRepository.findById(id).get().getAdresses();
     }
 }

@@ -6,15 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class UserDto {
+public class AdressDto {
 
     private Integer id;
-    private String dni;
-    private String firstname;
-    private String lastname;
-    private String username;
-
+    private String adress;
+    private TariffDto tariff;
 }

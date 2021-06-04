@@ -8,6 +8,7 @@ import com.utn.udee.model.User;
 import com.utn.udee.model.dto.LoginRequestDto;
 import com.utn.udee.model.dto.LoginResponseDto;
 import com.utn.udee.model.dto.UserDto;
+import com.utn.udee.model.dto.UserDtoI;
 import com.utn.udee.service.UserService;
 import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
@@ -54,7 +55,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping
-    public ResponseEntity<List<User>> getAll(Pageable pageable){
+    public ResponseEntity<List<UserDtoI>> getAll(Pageable pageable){
         Page page = userService.getAll(pageable);
         return ResponseEntityMaker.response(page.getContent(), page);
     }

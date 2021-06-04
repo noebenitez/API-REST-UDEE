@@ -4,10 +4,13 @@ import com.utn.udee.exception.TariffExistsException;
 import com.utn.udee.exception.TariffNotExistsException;
 import com.utn.udee.exception.UserNotExistsException;
 import com.utn.udee.model.Tariff;
+import com.utn.udee.model.dto.TariffDto;
 import com.utn.udee.service.TariffService;
 import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -16,19 +19,31 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping(value = "/tariffs")
 public class TariffController {
 
     private static final String TARIFF_PATH = "tariffs";
 
+    private final TariffService tariffService;
+    private final ConversionService conversionService;
+
     @Autowired
-    private TariffService tariffService;
+    public TariffController(TariffService tariffService, ConversionService conversionService) {
+        this.tariffService = tariffService;
+        this.conversionService = conversionService;
+    }
+
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
-    public ResponseEntity addTariff(@RequestBody Tariff tariff) throws TariffExistsException, UserNotExistsException {
-        Tariff newTariff = tariffService.add(tariff);
+    public ResponseEntity addTariff(@RequestBody TariffDto tariff) throws TariffExistsException {
+        Tariff tariffConverted = Tariff.builder()
+                .tariff(tariff.getTariff())
+                .tariffType(tariff.getTariffType())
+                .build();
+        Tariff newTariff = tariffService.add(tariffConverted);
         return ResponseEntity
                 .created(EntityURLBuilder.buildURL(TARIFF_PATH, newTariff.getId()))
                 .build();
@@ -36,9 +51,10 @@ public class TariffController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping
-    public ResponseEntity<List<Tariff>> getAll(Pageable pageable) {
+    public ResponseEntity<List<TariffDto>> getAll(Pageable pageable) {
         Page page = tariffService.getAll(pageable);
-        return ResponseEntityMaker.response(page.getContent(), page);
+        Page pageDto = page.map(tariff -> conversionService.convert(tariff, TariffDto.class));
+        return ResponseEntityMaker.response(pageDto.getContent(), pageDto);
 
     }
 
@@ -55,5 +71,4 @@ public class TariffController {
         tariffService.update(id, newTariff);
         return ResponseEntity.accepted().build();
     }
-
 }

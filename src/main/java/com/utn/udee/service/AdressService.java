@@ -3,17 +3,11 @@ package com.utn.udee.service;
 import com.utn.udee.exception.AdressExistsException;
 import com.utn.udee.exception.AdressNotExistsException;
 import com.utn.udee.model.Adress;
-import com.utn.udee.model.Tariff;
 import com.utn.udee.repository.AdressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 public class AdressService {
