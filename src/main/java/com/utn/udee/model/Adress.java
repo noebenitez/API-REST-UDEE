@@ -1,6 +1,8 @@
 package com.utn.udee.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,8 @@ import javax.persistence.*;
 @Data
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "adresses")
 public class Adress {
 
@@ -27,6 +31,6 @@ public class Adress {
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonBackReference(value = "customer-adress")
     @JoinColumn(name = "id_customer", nullable = false)
-    private User customer;
+    private Client customer;
 
 }

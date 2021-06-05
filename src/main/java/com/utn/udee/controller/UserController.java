@@ -14,6 +14,7 @@ import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,13 +38,17 @@ import static com.utn.udee.utils.Constants.JWT_SECRET;
 public class UserController {
 
     private static final String USERS_PATH = "users";
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private UserToUserDTOConverter userDTOConverter;
 
+    private final UserService userService;
+    private final ObjectMapper objectMapper;
+    private final UserToUserDTOConverter userDTOConverter;
+
+    @Autowired
+    public UserController(UserService userService, ObjectMapper objectMapper, UserToUserDTOConverter userDTOConverter) {
+        this.userService = userService;
+        this.objectMapper = objectMapper;
+        this.userDTOConverter = userDTOConverter;
+    }
 
     @PostMapping
     public ResponseEntity addUser(@RequestBody User user) throws UserExistsException {
@@ -69,7 +74,6 @@ public class UserController {
             return ResponseEntity.ok(LoginResponseDto.builder().token(this.generateToken(user)).build());
         else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
     }
 
 

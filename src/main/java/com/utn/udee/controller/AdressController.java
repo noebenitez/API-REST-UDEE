@@ -23,10 +23,14 @@ public class AdressController {
 
     private static final String ADRESS_PATH = "adresses";
 
+    private final AdressService adressService;
+    private final ConversionService conversionService;
+
     @Autowired
-    private AdressService adressService;
-    @Autowired
-    private ConversionService conversionService;
+    public AdressController(AdressService adressService, ConversionService conversionService){
+        this.adressService = adressService;
+        this.conversionService = conversionService;
+    }
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
@@ -54,7 +58,7 @@ public class AdressController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PutMapping("/{id}")
-    public ResponseEntity updateAdress(@PathVariable Integer id, @RequestBody Adress newAdress) throws AdressExistsException {
+    public ResponseEntity updateAdress(@PathVariable Integer id, @RequestBody Adress newAdress) throws AdressNotExistsException {
         adressService.update(id, newAdress);
         return ResponseEntity.accepted().build();
     }

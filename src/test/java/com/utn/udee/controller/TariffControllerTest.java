@@ -1,6 +1,7 @@
 package com.utn.udee.controller;
 
 import com.utn.udee.exception.TariffExistsException;
+import com.utn.udee.exception.TariffNotExistsException;
 import com.utn.udee.model.Tariff;
 import com.utn.udee.model.TariffType;
 import com.utn.udee.model.dto.TariffDto;
@@ -40,13 +41,13 @@ public class TariffControllerTest {
             .tariff(1123.21f)
             .tariffType(TariffType.COMMERCIAL).build();
 
-    private static List<Tariff> TARIFF_LIST = List.of(
+    private static List<Tariff> TARIFFS_LIST = List.of(
             Tariff.builder().id(1).tariff(1123.21f).tariffType(TariffType.COMMERCIAL).adresses(Collections.emptyList()).build(),
             Tariff.builder().id(2).tariff(222.21f).tariffType(TariffType.RESIDENTIAL).adresses(Collections.emptyList()).build(),
             Tariff.builder().id(3).tariff(333.3f).tariffType(TariffType.SOCIAL).adresses(Collections.emptyList()).build());
 
-    /*Result of Tariff list mapped to TariffDto*/
-    private static List<TariffDto> TARIFFDTO_LIST = List.of(
+    /*Result of TariffS list mapped to TariffDto*/
+    private static List<TariffDto> TARIFFSDTO_LIST = List.of(
             TariffDto.builder().id(1).tariff(1123.21f).tariffType(TariffType.COMMERCIAL).build(),
             TariffDto.builder().id(2).tariff(222.21f).tariffType(TariffType.RESIDENTIAL).build(),
             TariffDto.builder().id(3).tariff(333.3f).tariffType(TariffType.SOCIAL).build());
@@ -59,52 +60,15 @@ public class TariffControllerTest {
         entityURLBuilder = Mockito.mock(EntityURLBuilder.class);
         tariffController = new TariffController(tariffService, conversionService);
     }
-/*
-    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    @GetMapping
-    public ResponseEntity<List<TariffDto>> getAll(Pageable pageable) {
-        Page page = tariffService.getAll(pageable);
-        Page pageDto = page.map(tariff -> conversionService.convert(tariff, TariffDto.class));
-        return ResponseEntityMaker.response(pageDto.getContent(), pageDto);
 
-    }*/
-
-
-    /*Test for scenarios of method ResponseEntity addTariff(@RequestBody Tariff tariff)*/
-
-/*    @Test
-    public void testAddTariffCreated() throws Exception {
-        //Given
-        //final EntityURLBuilder spyEB = Mockito.spy(new EntityURLBuilder());
-        Tariff t = Tariff.builder()
-                .id(1)
-                .tariff(tariffDtoExample.getTariff())
-                .tariffType(tariffDtoExample.getTariffType())
-                .build();
-        when(tariffService.add(t)).thenReturn(t);
-        //doReturn(URI.create("http://api/tariff/" + t.getId())).when(entityURLBuilder).buildURL(nullable(String.class), nullable(Integer.class));
-        when(entityURLBuilder.buildURL(any(String.class), any(Integer.class))).thenReturn(URI.create("http://api/tariff/" + t.getId()));
-
-        //Then
-        ResponseEntity response = tariffController.addTariff(tariffDtoExample);
-
-        //Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        //assertEquals("http://api/tariff/" + t.getId() ,response.getHeaders().getLocation());
-    }*/
-
-
-    /*Test for scenarios of method ResponseEntity<List<TariffDto>> getAll(Pageable pageable)*/
     @Test
-    public void testAllTariffNoContent(){
+    public void testGetAllTariffsNoContent(){
         //Given
-        TariffDto tariffDto = new TariffDto();
 
         Pageable pageable = PageRequest.of(50, 10);
         Page<Tariff> mockedPage = mock(Page.class);
         when(mockedPage.getContent()).thenReturn(Collections.emptyList());
         when(tariffService.getAll(pageable)).thenReturn(mockedPage);
-        Page<TariffDto> mockedPageDto = mock(Page.class);
         when(mockedPage.map(Mockito.any())).thenReturn(mock(Page.class));
 
         //Then
@@ -116,20 +80,20 @@ public class TariffControllerTest {
     }
 
     @Test
-    public void testAllTariffOk(){
+    public void testGetAllTariffsOk(){
         //Given
         Pageable pageable = PageRequest.of(1, 2);
 
         Page mockedPage = mock(Page.class);
         when(mockedPage.getTotalElements()).thenReturn(3L);
         when(mockedPage.getTotalPages()).thenReturn(4);
-        when(mockedPage.getContent()).thenReturn(TARIFF_LIST);
+        when(mockedPage.getContent()).thenReturn(TARIFFS_LIST);
         when(tariffService.getAll(pageable)).thenReturn(mockedPage);
 
         Page mockedPageDto = mock(Page.class);
         when(mockedPageDto.getTotalElements()).thenReturn(3L);
         when(mockedPageDto.getTotalPages()).thenReturn(4);
-        when(mockedPageDto.getContent()).thenReturn(TARIFFDTO_LIST);
+        when(mockedPageDto.getContent()).thenReturn(TARIFFSDTO_LIST);
 
         when(mockedPage.map(any())).thenReturn(mockedPageDto);
 
@@ -140,7 +104,7 @@ public class TariffControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(3L, Long.parseLong(response.getHeaders().get("X-Total-Count").get(0)) );
         assertEquals(4, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)) );
-        assertEquals(TARIFFDTO_LIST, response.getBody());
+        assertEquals(TARIFFSDTO_LIST, response.getBody());
     }
 
     @Test
@@ -149,6 +113,7 @@ public class TariffControllerTest {
         ResponseEntity response = tariffController.deleteTariff(any(Integer.class));
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
 
     @Test
     public void testUpdateTariffOk() throws Exception{

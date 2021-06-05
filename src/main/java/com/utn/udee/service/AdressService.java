@@ -12,8 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdressService {
 
+    private final AdressRepository adressRepository;
+
     @Autowired
-    private AdressRepository adressRepository;
+    public AdressService(AdressRepository adressRepository){
+        this.adressRepository = adressRepository;
+    }
 
     public Page<Adress> getAll(Pageable pageable) {
         return adressRepository.findAll(pageable);
@@ -27,9 +31,9 @@ public class AdressService {
         }
     }
 
-    public Adress getById(Integer id) throws AdressExistsException {
+    public Adress getById(Integer id) throws AdressNotExistsException {
         return adressRepository.findById(id)
-                .orElseThrow(() -> new AdressExistsException());
+                .orElseThrow(() -> new AdressNotExistsException());
     }
 
     public void deleteById(Integer id) throws AdressNotExistsException {
@@ -40,7 +44,7 @@ public class AdressService {
         }
     }
 
-    public void update(Integer id, Adress newAdress) throws AdressExistsException {
+    public void update(Integer id, Adress newAdress) throws AdressNotExistsException {
         Adress adress = getById(id);
         adress.setAdress(newAdress.getAdress());
         adress.setCustomer(newAdress.getCustomer());
