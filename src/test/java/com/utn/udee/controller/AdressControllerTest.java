@@ -1,5 +1,8 @@
 package com.utn.udee.controller;
 
+import com.utn.udee.exception.AdressExistsException;
+import com.utn.udee.exception.GenericWebException;
+import com.utn.udee.exception.TariffExistsException;
 import com.utn.udee.model.Adress;
 import com.utn.udee.model.Client;
 import com.utn.udee.model.Tariff;
@@ -18,11 +21,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,6 +37,7 @@ import static org.mockito.Mockito.when;
 public class AdressControllerTest {
 
     private AdressService adressService;
+    private TariffService tariffService;
     private ConversionService conversionService;
     private AdressController adressController;
     private EntityURLBuilder entityURLBuilder;
@@ -65,9 +73,37 @@ public class AdressControllerTest {
     @BeforeEach
     public void setUp(){
         adressService = mock(AdressService.class);
+        tariffService = mock(TariffService.class);
         conversionService = Mockito.mock(ConversionService.class);
         entityURLBuilder = Mockito.mock(EntityURLBuilder.class);
-        adressController = new AdressController(adressService, conversionService);
+        adressController = new AdressController(adressService, tariffService, conversionService);
+    }
+
+    @Test
+    public void testAddAdressCreated(){
+        ResponseEntity response = null;
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        try {
+            when(adressService.add(any(Adress.class))).thenReturn(adressExample);
+            response = adressController.addAdress(adressDtoExample);
+        } catch (GenericWebException e) {
+            e.printStackTrace();
+        }
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("http://localhost/adresses/1", response.getHeaders().getLocation().toString());
+    }
+
+    @Test
+    public void testAddAdressThrowsException(){
+        try {
+            when(adressService.add(any(Adress.class))).thenThrow(AdressExistsException.class);
+        } catch (AdressExistsException e) {
+            e.printStackTrace();
+        }
+        assertThrows(AdressExistsException.class, ()->
+                adressService.add(adressExample));
     }
 
     @Test

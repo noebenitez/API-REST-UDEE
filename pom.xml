@@ -85,23 +85,12 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
+
 			<!--Jacoco for test coverage-->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.4</version>
+				<version>0.8.2</version>
 				<configuration>
 					<excludes>
 						<!--Packages excludes from the test-->
@@ -114,15 +103,10 @@
 				</configuration>
 				<executions>
 					<execution>
+						<id>default-prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
-						<configuration>
-							<append>true</append>
-							<destFile>${sonar.jacoco.reportPath}</destFile>
-							<!-- Sets the VM argument line used when unit tests are run. -->
-							<propertyName>surefireArgLine</propertyName>
-						</configuration>
 					</execution>
 					<!-- attached to Maven test phase -->
 					<execution>
@@ -166,21 +150,21 @@
 				</executions>
 			</plugin>
 
-			<!--Surefire needed for test with jacoco-->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<printSummary>false</printSummary>
-					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-					<forkCount>3</forkCount>
-					<reuseForks>true</reuseForks>
-					<argLine>@{surefireArgLine} -Xmx1024m -noverify</argLine>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 
 		</plugins>
+
 	</build>
 
 </project>

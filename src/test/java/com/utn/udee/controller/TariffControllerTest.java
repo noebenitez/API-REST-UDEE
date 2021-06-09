@@ -7,11 +7,13 @@ import com.utn.udee.model.TariffType;
 import com.utn.udee.model.dto.TariffDto;
 import com.utn.udee.service.TariffService;
 import com.utn.udee.utils.EntityURLBuilder;
+import org.apache.catalina.connector.Response;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.boot.test.mock.web.SpringBootMockServletContext;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,13 +21,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -59,6 +67,33 @@ public class TariffControllerTest {
         conversionService = Mockito.mock(ConversionService.class);
         entityURLBuilder = Mockito.mock(EntityURLBuilder.class);
         tariffController = new TariffController(tariffService, conversionService);
+    }
+
+    @Test
+    public void testAddTariffCreated(){
+        ResponseEntity response = null;
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+       try {
+            when(tariffService.add(any(Tariff.class))).thenReturn(tariffExample);
+            response = tariffController.addTariff(tariffDtoExample);
+        } catch (TariffExistsException e) {
+            e.printStackTrace();
+        }
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("http://localhost/tariffs/1", response.getHeaders().getLocation().toString());
+    }
+
+    @Test
+    public void testAddTariffThrowsException(){
+        try {
+            when(tariffService.add(any(Tariff.class))).thenThrow(TariffExistsException.class);
+        } catch (TariffExistsException e) {
+            e.printStackTrace();
+        }
+        assertThrows(TariffExistsException.class, ()->
+                tariffController.addTariff(tariffDtoExample));
     }
 
     @Test

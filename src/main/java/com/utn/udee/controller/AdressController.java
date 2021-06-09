@@ -2,9 +2,12 @@ package com.utn.udee.controller;
 
 import com.utn.udee.exception.AdressExistsException;
 import com.utn.udee.exception.AdressNotExistsException;
+import com.utn.udee.exception.TariffNotExistsException;
 import com.utn.udee.model.Adress;
+import com.utn.udee.model.Tariff;
 import com.utn.udee.model.dto.AdressDto;
 import com.utn.udee.service.AdressService;
+import com.utn.udee.service.TariffService;
 import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +27,24 @@ public class AdressController {
     private static final String ADRESS_PATH = "adresses";
 
     private final AdressService adressService;
+    private final TariffService tariffService;
     private final ConversionService conversionService;
 
     @Autowired
-    public AdressController(AdressService adressService, ConversionService conversionService){
+    public AdressController(AdressService adressService, TariffService tariffService, ConversionService conversionService){
         this.adressService = adressService;
+        this.tariffService = tariffService;
         this.conversionService = conversionService;
     }
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
-    public ResponseEntity addAdress(@RequestBody Adress adress) throws AdressExistsException {
-        Adress newAdress = adressService.add(adress);
+    public ResponseEntity addAdress(@RequestBody AdressDto adress) throws AdressExistsException, TariffNotExistsException {
+        Adress adressConverted = Adress.builder()
+                .adress(adress.getAdress())
+                .tariff(tariffService.getById(adress.getTariff().getId()))
+                .build();
+        Adress newAdress = adressService.add(adressConverted);
         return ResponseEntity
                 .created(EntityURLBuilder.buildURL(ADRESS_PATH, newAdress.getId()))
                 .build();
