@@ -1,14 +1,16 @@
-package com.henry.demo.utils;
+package com.utn.udee.utils;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
+
 public class EntityURLBuilder {
 
-    public static String buildURL(final String entity, final String id) {
+    public static URI buildURL(final String entity, final Integer id) {
         return ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path(("/{entity}/{id}"))
                 .buildAndExpand(entity, id)
-                .toUriString();
+                .toUri();
     }
 }

@@ -1,17 +1,36 @@
 package com.utn.udee.model;
 
-import com.utn.udee.model.Tariff;
-import com.utn.udee.model.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-public class Adress {
+import javax.persistence.*;
 
+@Data
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "adresses")
+public class Address {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    private String adress;
+
+    @Column
+    private String address;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference(value = "tariff-adress")
+    @JoinColumn(name = "id_tariff", nullable = false)
     private Tariff tariff;
-    private User customer;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference(value = "customer-adress")
+    @JoinColumn(name = "id_customer", nullable = false)
+    private Client customer;
 
 }
