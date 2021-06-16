@@ -10,6 +10,6 @@ public class UserNotExistsException extends GenericWebException{
     }
 
     public String getMessage(){
-        return "User don't exists.";
+        return "User doesn't exists.";
     }
 }

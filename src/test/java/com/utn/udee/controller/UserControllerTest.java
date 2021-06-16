@@ -2,14 +2,19 @@ package com.utn.udee.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utn.udee.controller.converter.UserToUserDTOConverter;
+import com.utn.udee.exception.FailTokenException;
 import com.utn.udee.model.*;
 import com.utn.udee.model.dto.*;
 import com.utn.udee.service.TariffService;
 import com.utn.udee.service.UserService;
 import com.utn.udee.utils.EntityURLBuilder;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 import org.springframework.core.convert.ConversionService;
@@ -18,11 +23,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
+import static com.utn.udee.utils.TestUtils.aUsersDtoList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -34,22 +43,6 @@ public class UserControllerTest {
     private UserToUserDTOConverter userDTOConverter;
     private UserController userController;
     private EntityURLBuilder entityURLBuilder;
-
-    private static User userExample = new Client(1, "11222333", "John", "Doe", "john1", "1122", Collections.emptyList());
-
-    private static UserDto userDtoExample = new UserDto(1, "11222333", "John", "Doe", "john1");
-
-    private static List<User> USERS_LIST = List.of(
-            new Client(1, "11222333", "John", "Doe", "john1", "1122", Collections.emptyList()),
-            new Employee(2, "99888777", "Rachel", "Smiths", "smiths1", "2211"));
-
-    /*Result of User list mapped to UserDto*/
-    private static List<UserDto> USERSDTO_LIST = List.of(
-            new UserDto(1, "11222333", "John", "Doe", "john1"),
-            new UserDto(2, "99888777", "Rachel", "Smiths", "smiths1"));
-
-
-
 
     @BeforeEach
     public void setUp(){
@@ -86,7 +79,7 @@ public class UserControllerTest {
         when(mockedPage.getTotalElements()).thenReturn(2L);
         when(mockedPage.getTotalPages()).thenReturn(1);
 
-        when(mockedPage.getContent()).thenReturn(USERSDTO_LIST);
+        when(mockedPage.getContent()).thenReturn(aUsersDtoList);
         when(userService.getAll(pageable)).thenReturn(mockedPage);
 
         //Then
@@ -96,35 +89,11 @@ public class UserControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2L, Long.parseLong(response.getHeaders().get("X-Total-Count").get(0)) );
         assertEquals(1, Integer.parseInt(response.getHeaders().get("X-Total-Pages").get(0)) );
-        assertEquals(USERSDTO_LIST, response.getBody());
+        assertEquals(aUsersDtoList, response.getBody());
     }
 
-
-    /*Test for scenarios of method  public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
-     */
-/*    @Test
-    public void testLoginOk(){
-        //Given
-        LoginRequestDto loginRequestDto = new LoginRequestDto("john1", "1122");
-        LoginResponseDto loginResponseDto = mock(LoginResponseDto.class);
-        when(loginResponseDto.getToken()).thenReturn("token12345");
-
-        final UserController mockUserController = mock(UserController.class);
-        when(userService.login(loginRequestDto.getUsername(), loginRequestDto.getPassword())).thenReturn(userExample);
-        ResponseEntity res = mock(ResponseEntity.class);
-        when(res.getStatusCode()).thenReturn(HttpStatus.OK);
-        when(res.getBody()).thenReturn("token12345");
-
-
-
-        ResponseEntity<LoginResponseDto> response = userController.login(loginRequestDto);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(loginResponseDto.getToken(), response.getBody());
-    }*/
-
     @Test
-    public void testLoginUnauthorized(){
+    public void testLoginUnauthorized() throws Exception{
         LoginRequestDto loginRequestDto = new LoginRequestDto("notAUser", "3322");
         when(userService.login(loginRequestDto.getUsername(), loginRequestDto.getPassword())).thenReturn(null);
 
@@ -132,4 +101,5 @@ public class UserControllerTest {
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
 }

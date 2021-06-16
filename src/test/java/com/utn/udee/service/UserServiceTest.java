@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.utn.udee.utils.TestUtils.aUserClient;
+import static com.utn.udee.utils.TestUtils.aUsersDtoList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -23,19 +25,14 @@ import static org.mockito.Mockito.when;
 public class UserServiceTest {
 
     private UserRepository userRepository;
+    private AddressService addressService;
     private UserService userService;
-
-    private static User userExample = new Client(1, "11222333", "John", "Doe", "john1", "1122", Collections.emptyList());
-
-    private static List<UserDto> USERSDTO_LIST = List.of(
-            new UserDto(1, "11222333", "John", "Doe", "john1"),
-            new UserDto(2, "99888777", "Rachel", "Smiths", "smiths1"));
-
 
     @BeforeEach
     public void setUp(){
         userRepository = mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        addressService = mock(AddressService.class);
+        userService = new UserService(userRepository, addressService);
     }
 
     @Test
@@ -48,7 +45,7 @@ public class UserServiceTest {
         toAdd.setPassword("1122");
         User newClient = new Client();
         when(userRepository.existsByDni(toAdd.getDni())).thenReturn(false);
-        when(userRepository.save(any(User.class))).thenReturn(userExample);
+        when(userRepository.save(any(User.class))).thenReturn(aUserClient);
         try {
             newClient = userService.add(toAdd);
         } catch (UserExistsException e) {
@@ -66,12 +63,12 @@ public class UserServiceTest {
     public void testAddUserThrowsException(){
         when(userRepository.existsByDni((any(String.class)))).thenReturn(true);
         assertThrows(UserExistsException.class, ()->
-                userService.add(userExample));
+                userService.add(aUserClient));
     }
 
     @Test
     public void testLoginHappyPath(){
-        when(userRepository.findByUsernameAndPassword(any(String.class), any(String.class))).thenReturn(userExample);
+        when(userRepository.findByUsernameAndPassword(any(String.class), any(String.class))).thenReturn(aUserClient);
         User user = userService.login("john1", "1122");
         assertEquals("john1", user.getUsername());
         assertEquals("1122", user.getPassword());
@@ -85,20 +82,20 @@ public class UserServiceTest {
         Page mockedPage = mock(Page.class);
         when(mockedPage.getTotalElements()).thenReturn(2L);
         when(mockedPage.getTotalPages()).thenReturn(1);
-        when(mockedPage.getContent()).thenReturn(USERSDTO_LIST);
+        when(mockedPage.getContent()).thenReturn(aUsersDtoList);
         when(userRepository.findAllDto(pageable)).thenReturn(mockedPage);
 
         Page<UserDtoI> userPage = userService.getAll(pageable);
 
         assertEquals(2L, userPage.getTotalElements());
         assertEquals(1, userPage.getTotalPages());
-        assertEquals(USERSDTO_LIST, userPage.getContent());
+        assertEquals(aUsersDtoList, userPage.getContent());
     }
 
     @Test
     public void testGetUserByIdHappyPath(){
         Client client = new Client();
-        when(userRepository.findById(1)).thenReturn(Optional.ofNullable(userExample));
+        when(userRepository.findById(1)).thenReturn(Optional.ofNullable(aUserClient));
         try {
             client = (Client) userService.getById(1);
         } catch (UserNotExistsException e) {

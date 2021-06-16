@@ -2,14 +2,14 @@ package com.utn.udee.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class AdressNotExistsException extends GenericWebException {
+public class AddressNotExistsException extends GenericWebException {
 
-    public AdressNotExistsException(){
+    public AddressNotExistsException(){
         this.status = HttpStatus.NOT_FOUND;
         this.code = "05";
     }
 
     public String getMessage(){
-        return "Adress don't exists.";
+        return "Address doesn't exists.";
     }
 }

@@ -10,7 +10,7 @@ public class TariffNotExistsException extends GenericWebException {
     }
 
     public String getMessage(){
-        return "Tariff don't exists.";
+        return "Tariff doesn't exists.";
     }
 
 }

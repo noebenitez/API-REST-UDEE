@@ -1,8 +1,6 @@
 package com.utn.udee.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,13 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 public class Client extends User{
 
-    @OneToMany(mappedBy = "customer")
-    @JsonManagedReference(value = "customer-adress")
-    private List<Adress> adressList;
+    @JsonManagedReference(value = "customer-address")
+    @OneToMany(mappedBy = "customer", targetEntity = Address.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private List<Address> addressList;
 
-    public Client(Integer id, String dni, String firstname, String lastname, String username, String password, List<Adress> adressList) {
+    public Client(Integer id, String dni, String firstname, String lastname, String username, String password, List<Address> addressList) {
         super(id, dni, firstname, lastname, username, password);
-        this.adressList = adressList;
+        this.addressList = addressList;
     }
 
     @Override

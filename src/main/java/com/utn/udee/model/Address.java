@@ -7,29 +7,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "adresses")
-public class Adress {
+@Table(name = "addresses")
+public class Address {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
     @Column
-    private String adress;
+    private String address;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference(value = "tariff-adress")
+    @JsonBackReference(value = "tariff-address")
     @JoinColumn(name = "id_tariff", nullable = false)
     private Tariff tariff;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference(value = "customer-adress")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference(value = "customer-address")
     @JoinColumn(name = "id_customer", nullable = false)
     private Client customer;
 

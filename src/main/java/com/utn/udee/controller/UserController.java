@@ -2,7 +2,10 @@ package com.utn.udee.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.utn.udee.controller.converter.UserToUserDTOConverter;
+import com.utn.udee.exception.AddressNotExistsException;
+import com.utn.udee.exception.FailTokenException;
 import com.utn.udee.exception.UserExistsException;
+import com.utn.udee.exception.UserNotExistsException;
 import com.utn.udee.model.Employee;
 import com.utn.udee.model.User;
 import com.utn.udee.model.dto.LoginRequestDto;
@@ -67,7 +70,7 @@ public class UserController {
 
 
     @PostMapping(value = "/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) throws FailTokenException {
 
         User user = userService.login(loginRequestDto.getUsername(), loginRequestDto.getPassword());
         if (user!=null)
@@ -77,15 +80,7 @@ public class UserController {
     }
 
 
-/*
-    @GetMapping(value = "/userDetails")
-    public ResponseEntity<User> userDetails(Authentication auth) {
-        return ResponseEntity.ok((User) auth.getPrincipal());
-    }
-*/
-
-
-    private String generateToken(User user) {
+    protected String generateToken(User user) throws FailTokenException {
         try{
             String authority;
             if (user instanceof Employee)
@@ -106,7 +101,7 @@ public class UserController {
                     .signWith(SignatureAlgorithm.HS512, JWT_SECRET.getBytes()).compact();
             return  token;
         } catch(Exception e) {
-            return "asd";
+            throw new FailTokenException();
         }
     }
 }

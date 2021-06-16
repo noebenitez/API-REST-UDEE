@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdressDto {
+public class AddressDto {
 
     private Integer id;
-    private String adress;
+    private String address;
     private TariffDto tariff;
+    private UserDto customer;
 }

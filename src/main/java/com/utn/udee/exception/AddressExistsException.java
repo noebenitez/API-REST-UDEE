@@ -2,14 +2,14 @@ package com.utn.udee.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class AdressExistsException extends GenericWebException {
+public class AddressExistsException extends GenericWebException {
 
-    public AdressExistsException(){
+    public AddressExistsException(){
         this.status = HttpStatus.CONFLICT;
         this.code = "04";
     }
 
     public String getMessage(){
-        return "Adress already exists.";
+        return "Address already exists.";
     }
 }

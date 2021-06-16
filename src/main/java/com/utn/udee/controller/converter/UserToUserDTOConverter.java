@@ -20,13 +20,13 @@ public class UserToUserDTOConverter implements Converter<User, UserDto> {
     }
 
     @Override
-    public UserDto convert(User source){
+    public UserDto
+    convert(User source){
         return modelMapper.map(source, UserDto.class);
     }
 
-    @SneakyThrows
-    public User convertReverse(UserDto userDto)  {
+/*    public User convertReverse(UserDto userDto)  {
         return userService.getById(userDto.getId());
-    }
+    }*/
 
 }

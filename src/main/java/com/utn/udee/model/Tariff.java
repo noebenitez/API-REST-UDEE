@@ -1,6 +1,5 @@
 package com.utn.udee.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +28,8 @@ public class Tariff {
     @Enumerated(EnumType.STRING)
     private TariffType tariffType;
 
-    @JsonManagedReference(value = "tariff-adress")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tariff")
-    private List<Adress> adresses;
+    @JsonManagedReference(value = "tariff-address")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tariff", orphanRemoval = true)
+    private List<Address> addresses;
 
 }

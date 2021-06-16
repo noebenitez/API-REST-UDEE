@@ -2,16 +2,12 @@ package com.utn.udee.service;
 
 import com.utn.udee.exception.TariffExistsException;
 import com.utn.udee.exception.TariffNotExistsException;
-import com.utn.udee.model.Adress;
 import com.utn.udee.model.Tariff;
-import com.utn.udee.model.dto.TariffDto;
 import com.utn.udee.repository.TariffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TariffService {
@@ -52,7 +48,7 @@ public class TariffService {
         Tariff tariff = getById(id);
         tariff.setTariff(newTariff.getTariff());
         tariff.setTariffType(newTariff.getTariffType());
-        tariff.setAdresses(newTariff.getAdresses());
+        tariff.setAddresses(newTariff.getAddresses());
         tariffRepository.save(tariff);
     }
 }

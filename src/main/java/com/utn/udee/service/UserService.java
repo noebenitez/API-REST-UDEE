@@ -1,7 +1,10 @@
 package com.utn.udee.service;
 
+import com.utn.udee.exception.AddressNotExistsException;
 import com.utn.udee.exception.UserExistsException;
 import com.utn.udee.exception.UserNotExistsException;
+import com.utn.udee.model.Address;
+import com.utn.udee.model.Client;
 import com.utn.udee.model.User;
 import com.utn.udee.model.dto.UserDtoI;
 import com.utn.udee.repository.UserRepository;
@@ -16,10 +19,12 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AddressService addressService;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, AddressService addressService){
         this.userRepository = userRepository;
+        this.addressService = addressService;
     }
 
     public User add(User user) throws UserExistsException {
