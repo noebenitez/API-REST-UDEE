@@ -21,15 +21,15 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Intege
 
     @Query(value="SELECT m.* from measurements m" +
             "inner join meters t on t.id = m.id_meter" +
-            "where t.id_adress = :idAddress and (m.m_datetime between :from and :to)" +
+            "where t.id_address = :idAddress and (m.m_datetime between :from and :to)" +
             "order by m.m_datetime ASC",nativeQuery = true)
     List<Measurement> getByAddressAndRangeDate(@Param("idAddress") Integer idAddress, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 
 
    ///review userprojection
     @Query(value="SELECT u.dni as dni, u.firstname as firstname, u.lastname as lastname, u.username as username, sum(m.measurement) as sum from users u" +
-                 "inner join adresses a on a.id_customer = u.id" +
-                 "inner join meters me on me.id_adress = a.id" +
+                 "inner join addresses a on a.id_customer = u.id" +
+                 "inner join meters me on me.id_address = a.id" +
                  "inner join measurements m on m.id_meter = me.id" +
                  "where m.m_datetime between :from and :to" +
                  "group by(u.dni)" +
@@ -39,15 +39,15 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Intege
 
     @Query(value="SELECT m.* from measurements m" +
                  "inner join meters me on m.id_meter = me.id" +
-                 "inner join adresses a on a.id_customer = :idUser" +
-                 "where (me.id_adress = a.id) and (m.m_datetime between :from and :to)", nativeQuery = true )
+                 "inner join addresses a on a.id_customer = :idUser" +
+                 "where (me.id_address = a.id) and (m.m_datetime between :from and :to)", nativeQuery = true )
     List<Measurement> getConsumptionByRangeDate(@Param("idUser") Integer idUser,@Param("from") LocalDateTime from,@Param("to") LocalDateTime to);
 
 
     @Query(value="SELECT sum(m.measurement) as totalKw,sum(m.measurement*m.price) as totalAmount from measurements m" +
             "inner join meters me on m.id_meter = me.id" +
-            "inner join adresses a on a.id_customer = :idUser" +
-            "where (me.id_adress = a.id) and (m.m_datetime between :from and :to)", nativeQuery = true )
+            "inner join addresses a on a.id_customer = :idUser" +
+            "where (me.id_address = a.id) and (m.m_datetime between :from and :to)", nativeQuery = true )
     Consumption getTotalConsumptionByRangeDate(@Param("idUser") Integer idUser, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
 }
 
