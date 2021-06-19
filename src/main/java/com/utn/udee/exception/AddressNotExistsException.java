@@ -10,6 +10,6 @@ public class AddressNotExistsException extends GenericWebException {
     }
 
     public String getMessage(){
-        return "Adress don't exists.";
+        return "Address don't exists.";
     }
 }
