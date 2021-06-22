@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -41,7 +42,7 @@ public class AddressController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
-    public ResponseEntity addAddress(@RequestBody AddressDto address) throws AddressExistsException, TariffNotExistsException, UserNotExistsException, IncorrectUserTypeException {
+    public ResponseEntity addAddress(@RequestBody @Valid AddressDto address) throws AddressExistsException, TariffNotExistsException, UserNotExistsException, IncorrectUserTypeException {
         User client = userService.getById(address.getCustomer().getId());
         if (!(client instanceof Client)){
             throw new IncorrectUserTypeException();

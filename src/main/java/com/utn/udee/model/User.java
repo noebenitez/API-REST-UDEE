@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.AccessType;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
@@ -29,14 +30,24 @@ public abstract class User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
+
+    @NotBlank(message = "The dni must be specified. It cannot be null or whitespace.")
     @Column
     private String dni;
+
+    @NotBlank(message = "The firstname must be specified. It cannot be null or whitespace.")
     @Column
     private String firstname;
+
+    @NotBlank(message = "The lastname must be specified. It cannot be null or whitespace.")
     @Column
     private String lastname;
+
+    @NotBlank(message = "The username must be specified. It cannot be null or whitespace.")
     @Column
     private String username;
+
+    @NotBlank(message = "The password must be specified. It cannot be null or whitespace.")
     @Column(name = "u_password")
     private String password;
 

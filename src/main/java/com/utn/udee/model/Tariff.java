@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Data
@@ -21,9 +24,11 @@ public class Tariff {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
+    @PositiveOrZero(message = "The tariff must be specified. It cannot be a negative value.")
     @Column
     private Float tariff;
 
+    @NotBlank(message = "The tariffType must be specified. It cannot be null or whitespace.")
     @Column(name = "tariff_type")
     @Enumerated(EnumType.STRING)
     private TariffType tariffType;

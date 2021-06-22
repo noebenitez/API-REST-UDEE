@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -38,7 +39,7 @@ public class TariffController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
-    public ResponseEntity addTariff(@RequestBody TariffDto tariff) throws TariffExistsException {
+    public ResponseEntity addTariff(@RequestBody @Valid TariffDto tariff) throws TariffExistsException {
         Tariff tariffConverted = Tariff.builder()
                 .tariff(tariff.getTariff())
                 .tariffType(tariff.getTariffType())
