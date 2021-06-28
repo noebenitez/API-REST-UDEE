@@ -1,4 +1,4 @@
-package com.utn.udee.model;
+package com.utn.udee.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Consumption {
-    private float totalKw;
-    private float totalAmount;
+public class ClientDto {
+    String dni;
+    String firstname;
+    String lastname;
+
+
 }

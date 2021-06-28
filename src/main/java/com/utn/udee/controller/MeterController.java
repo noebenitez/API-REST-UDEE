@@ -6,7 +6,9 @@ import com.utn.udee.model.Measurement;
 import com.utn.udee.model.Meter;
 import com.utn.udee.model.dto.MeasurementDto;
 import com.utn.udee.model.dto.MeterDto;
+import com.utn.udee.service.MeasurementService;
 import com.utn.udee.service.MeterService;
+import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,6 +29,7 @@ import java.util.UUID;
 @RequestMapping("/meters")
 public class MeterController {
     private MeterService meterService;
+    private MeasurementService measurementService;
     @Autowired
     private ConversionService conversionService; //interfaz del metodo convert, le pasamos source y target
     ///por cada converter que tenemos o cada implementacion de converter
@@ -35,12 +39,13 @@ public class MeterController {
     ///se encarga de ir a buscar los converters/
 
     @Autowired
-    public MeterController(MeterService meterService)
+    public MeterController(MeterService meterService, MeasurementService measurementService)
     {
         this.meterService=meterService;
+        this.measurementService=measurementService;
     }
 
-
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
     public ResponseEntity addMeter(@RequestBody Meter meter)
     {
@@ -61,6 +66,7 @@ public class MeterController {
     }
 
 */
+     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/{id}")
     public ResponseEntity<MeterDto> getMeterDtoById(@PathVariable Integer id) throws MeterNotExistsException {
         Meter m = meterService.getById(id);
@@ -74,7 +80,7 @@ public class MeterController {
     {
         return meterService.getAll(page,size);
     }*/
-
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/")
     public ResponseEntity<Page<Meter>> getAll(Pageable pageable)
     {
@@ -84,23 +90,26 @@ public class MeterController {
 
     @PutMapping("/{idMeter}/measurements/{idMeasurement}")
     public ResponseEntity addMeasurementToMeter(@PathVariable Integer idMeter, @PathVariable Integer idMeasurement) throws MeasurementNotExistsException, MeterNotExistsException {
-        meterService.addMeasurementToMeter(idMeter,idMeasurement);
+        Measurement m = measurementService.getById(idMeasurement);
+        meterService.addMeasurementToMeter(idMeter,m);
         return ResponseEntity.ok().build();
     }
-    ///paginar???
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/{idMeter}/measurements")
     public ResponseEntity<Page<Measurement>> getMeasurementsByMeter(@PathVariable Integer idMeter, Pageable pageable)
     {
-        Page p = meterService.getMeasurementsByMeter(idMeter,pageable);
-       return response(p);
+        Page<Measurement> p = measurementService.getMeasurementsByMeter(idMeter,pageable);
+       return ResponseEntityMaker.response(p.getContent(),p);
     }
 
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @DeleteMapping("/{idMeter}")
     public ResponseEntity deleteById(@PathVariable Integer idMeter)
     {
         meterService.deleteById(idMeter);
         return ResponseEntity.ok().build();
     }
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PutMapping("/{idMeter}")
     public ResponseEntity updateMeter(@PathVariable Integer idMeter, @RequestBody Meter meter) throws MeterNotExistsException {
         meterService.updateMeter(idMeter,meter);
@@ -113,14 +122,6 @@ public class MeterController {
        Page p =  meterService.getMeasurementsByMeter(idMeter,pageable);
         return ResponseEntityMaker.response(p.getContent(),p);
     }*/
-private ResponseEntity response(Page page) {
-    HttpStatus httpStatus = page.getContent().isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-    return ResponseEntity.
-            status(httpStatus).
-            header("X-Total-Count", Long.toString(page.getTotalElements())).
-            header("X-Total-Pages", Long.toString(page.getTotalPages())).
-            body(page.getContent());
 
-}
 
 }

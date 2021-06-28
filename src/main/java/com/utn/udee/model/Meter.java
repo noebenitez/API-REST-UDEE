@@ -1,5 +1,6 @@
 package com.utn.udee.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,7 +38,8 @@ public class Meter {
     @NotNull(message="address associated to meter cannot be null")
     @JoinColumn(name="id_address")
     private Address address;
-    @OneToMany(mappedBy="meter", fetch=FetchType.EAGER)
+    @JsonBackReference
+    @OneToMany(mappedBy="meter", fetch=FetchType.LAZY)
     private List<Measurement> measurements;
 //    @OneToMany(fetch=FetchType.EAGER)
 //    private List<Invoice> invoices;

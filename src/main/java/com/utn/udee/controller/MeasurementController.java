@@ -1,17 +1,24 @@
 package com.utn.udee.controller;
 
 import com.utn.udee.exception.MeasurementNotExistsException;
+import com.utn.udee.exception.MeterNotExistsException;
 import com.utn.udee.model.Measurement;
+import com.utn.udee.model.Meter;
+import com.utn.udee.model.dto.InvoiceDto;
 import com.utn.udee.model.dto.MeasurementDto;
+import com.utn.udee.model.dto.MeasurementSenderDto;
 import com.utn.udee.model.dto.MeterDto;
 import com.utn.udee.service.MeasurementService;
+import com.utn.udee.service.MeterService;
 import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +30,17 @@ import java.util.List;
 public class MeasurementController {
     private static final String MEASUREMENTS_PATH = "measurements";
     private MeasurementService measurementService;
+    private MeterService meterService;
+    private ConversionService conversionService;
+
     @Autowired
-    public MeasurementController(MeasurementService measurementService)
+    public MeasurementController(MeasurementService measurementService, MeterService meterService,ConversionService conversionService)
     {
         this.measurementService = measurementService;
+        this.meterService=meterService;
+        this.conversionService = conversionService;
     }
-
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/{id}")
     public ResponseEntity<MeasurementDto> getById(@PathVariable Integer id) throws MeasurementNotExistsException
     {
@@ -37,24 +49,27 @@ public class MeasurementController {
     }
 
     @PostMapping
-    public ResponseEntity addMeasurement(@RequestBody Measurement measurement)
-    {
-        Measurement m = measurementService.add(measurement);
+    public ResponseEntity addMeasurement(@RequestBody MeasurementSenderDto measurement) throws MeterNotExistsException {
+        Meter meter = meterService.getbySerialNumber(measurement.getSerialNumber());
+        Measurement m = measurementService.add(measurement,meter);
         return ResponseEntity.created(EntityURLBuilder.buildURL(MEASUREMENTS_PATH,m.getId())).build();
     }
 
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("")
-    public ResponseEntity<Page<Measurement>> getAll(Pageable pageable)
+    public ResponseEntity<Page<MeasurementDto>> getAll(Pageable pageable)
     {
-        Page p = measurementService.getAllMeasurements(pageable);
-        return ResponseEntityMaker.response(p.getContent(),p);
+        Page<Measurement> p = measurementService.getAllMeasurements(pageable);
+        Page<MeasurementDto> to= p.map(measurement -> conversionService.convert(measurement, MeasurementDto.class));
+        return ResponseEntityMaker.response(to.getContent(),to);
     }
 
+    @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(@PathVariable Integer id)
     {
         measurementService.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.accepted().build();
     }
 
     /*@PutMapping("/{id}")

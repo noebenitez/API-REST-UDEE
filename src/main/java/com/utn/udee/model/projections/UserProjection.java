@@ -11,6 +11,6 @@ public interface UserProjection {
 
     String getUsername();
 
-    Integer getSum();
+    Float getSum();
 
 }

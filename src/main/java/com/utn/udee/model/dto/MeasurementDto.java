@@ -1,6 +1,7 @@
 package com.utn.udee.model.dto;
 
 //import com.utn.udee.model.Invoice;
+import com.utn.udee.model.Invoice;
 import com.utn.udee.model.Measurement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +18,7 @@ public class MeasurementDto {
     Float measurement;
     Float price;
     LocalDateTime datetime;
-//    Invoice invoice;
+    InvoiceDto invoice;
 
 
     public static MeasurementDto getMeasurementDto(Measurement measurement) {

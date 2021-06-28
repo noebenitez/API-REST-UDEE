@@ -1,5 +1,6 @@
 package com.utn.udee.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,10 +20,10 @@ public class Invoice {
     @Column(name="serial_number")
     @NotEmpty(message="Serial number associated cannot be left null or empty")
     private String serialNumber;
-    @OneToOne
-    @Column(name="id_customer")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="id_customer")
     @NotNull(message="client associated with invoice cannot be null")
-    private Client client;
+    private Client billedTo;
     @Column(name="initial_measurement")
     private Float initialMeasurement;
     @Column(name="final_measurement")
@@ -32,11 +33,11 @@ public class Invoice {
     private Float totalConsumption;
     @NotNull(message="Total to be paid cannot be null")
     @Column(name="total_to_paid")
-    private Float totalToPaid;
+    private Float amountDue;
     @Column(name="initial_datetime")
     private LocalDateTime initialTime;
     @Column(name="final_datetime")
-    private LocalDateTime finalTime;
+    private LocalDateTime endTime;
     @Column(name="due_date")
     private LocalDateTime dueDate;
     @NotNull(message="Tariff type cannot be null")

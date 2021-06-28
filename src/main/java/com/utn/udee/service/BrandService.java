@@ -20,11 +20,8 @@ public class BrandService {
         this.brandRepository = brandRepository;
     }
 
-    public ResponseEntity add(Brand brand) {
-        Brand b = brandRepository.save(brand);
-        return ResponseEntity
-                .created(EntityURLBuilder.buildURL("brands",b.getId()))
-                .build();
+    public Brand add(Brand brand) {
+        return brandRepository.save(brand);
 
     }
 

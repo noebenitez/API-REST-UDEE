@@ -21,13 +21,12 @@ import java.util.stream.Collectors;
 public class MeterService {
 
     private final MeterRepository meterRepository;
-    private final MeasurementService measurementService;
+//    private MeasurementService measurementService;
 
     @Autowired
-    public MeterService(MeterRepository meterRepository, MeasurementService measurementService)
+    public MeterService(MeterRepository meterRepository)
     {
         this.meterRepository=meterRepository;
-        this.measurementService=measurementService;
     }
 
     public Meter add(Meter meter) {
@@ -50,17 +49,17 @@ public class MeterService {
         return meterRepository.findAll(pageable);
     }
 
-    public void addMeasurementToMeter(Integer idMeter, Integer idMeasurement) throws MeasurementNotExistsException, MeterNotExistsException {
-            Measurement m = measurementService.getById(idMeasurement);
+    public void addMeasurementToMeter(Integer idMeter, Measurement m) throws MeasurementNotExistsException, MeterNotExistsException {
+//        Measurement m = measurementService.getById(idMeasurement);
             Meter meter = meterRepository.findById(idMeter).orElseThrow(MeterNotExistsException::new);
             meter.getMeasurements().add(m);
             meterRepository.save(meter);
     }
 
-    public Page<Measurement> getMeasurementsByMeter(Integer idMeter,Pageable p) {
-        return measurementService.findMeasurementsByMeter(idMeter,p);
-        /// return measurementService.findMeasurementsByMeter(idMeter).stream().map(m -> MeasurementDto.builder().id(m.getId()).measurement(m.getMeasurement()).price(m.getPrice()).datetime(m.getDatetime()).invoice(m.getInvoice()).build()).collect(Collectors.toList());
-    }
+//    public Page<Measurement> getMeasurementsByMeter(Integer idMeter,Pageable p) {
+//        return measurementService.findMeasurementsByMeter(idMeter,p);
+//        /// return measurementService.findMeasurementsByMeter(idMeter).stream().map(m -> MeasurementDto.builder().id(m.getId()).measurement(m.getMeasurement()).price(m.getPrice()).datetime(m.getDatetime()).invoice(m.getInvoice()).build()).collect(Collectors.toList());
+//    }
 
     public void deleteById(Integer idMeter) {
         meterRepository.deleteById(idMeter);
@@ -68,6 +67,13 @@ public class MeterService {
 
     public void updateMeter(Integer idMeter, Meter meter) throws MeterNotExistsException {
         Meter m = meterRepository.findById(idMeter).orElseThrow(MeterNotExistsException::new);
+
+    }
+
+    public Meter getbySerialNumber(String serialNumber) throws MeterNotExistsException {
+       Meter m  = meterRepository.findMeterBySerialNumber(serialNumber);
+       if (m != null) return m;
+       else throw new MeterNotExistsException();
 
     }
 }

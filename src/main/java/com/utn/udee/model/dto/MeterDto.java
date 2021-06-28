@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MeterDto {
-    private String serialNumber;
+    String serialNumber;
 
-    private Brand brand;
+   Brand brand;
 
-    private Model model;
+    Model model;
 
-//    private Address address;
+     Address address;
 
     public static MeterDto getMeterDto(Meter meter) {
         return MeterDto.builder().serialNumber(meter.getSerialNumber()).brand(meter.getBrand()).model(meter.getModel()).build();

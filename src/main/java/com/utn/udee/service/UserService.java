@@ -3,13 +3,11 @@ package com.utn.udee.service;
 import com.utn.udee.exception.AddressNotExistsException;
 import com.utn.udee.exception.UserExistsException;
 import com.utn.udee.exception.UserNotExistsException;
-import com.utn.udee.model.Address;
-import com.utn.udee.model.Consumption;
-import com.utn.udee.model.Measurement;
-import com.utn.udee.model.User;
-import com.utn.udee.model.dto.MeasurementDto;
+import com.utn.udee.model.*;
 import com.utn.udee.model.dto.UserDtoI;
+import com.utn.udee.model.projections.ConsumptionProjection;
 import com.utn.udee.model.projections.UserProjection;
+import com.utn.udee.repository.MeasurementRepository;
 import com.utn.udee.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -70,8 +67,13 @@ public class UserService {
         return measurementService.getRangeDateConsumption(userId,from,to);
     }
 
-    public Consumption getTotalRangeDateConsumption(Integer userId, LocalDateTime from, LocalDateTime to) {
+    public ConsumptionProjection getTotalRangeDateConsumption(Integer userId, LocalDateTime from, LocalDateTime to) {
 
         return measurementService.getTotalRangeDateConsumption(userId,from,to);
     }
+
+
+  /*  public Page<Measurement> getAllMeasurementsByAddressId(Integer addressId, Pageable pageable) {
+       return  measurementService.getAllMeasurementsByAddressId(addressId,pageable);
+    }*/
 }

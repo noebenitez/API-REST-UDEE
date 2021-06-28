@@ -31,6 +31,7 @@ public class UdeeApplication {
 					.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 					.authorizeRequests()
 					.antMatchers(HttpMethod.POST, "/users/login").permitAll()
+					.antMatchers(HttpMethod.POST, "/measurements").permitAll() ///most villerou - inv.
 					.anyRequest().authenticated();
 		}
 	}

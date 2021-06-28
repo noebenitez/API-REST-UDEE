@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @Entity
+@Builder
 @AllArgsConstructor
 @Table(name="measurements")
 public class Measurement {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name="id_meter")
     @NotNull(message ="Meter associated cannot be null")

@@ -1,8 +1,12 @@
 package com.utn.udee.service;
 
 import com.utn.udee.exception.MeasurementNotExistsException;
-import com.utn.udee.model.Consumption;
+import com.utn.udee.exception.MeterNotExistsException;
+import com.utn.udee.model.Client;
 import com.utn.udee.model.Measurement;
+import com.utn.udee.model.Meter;
+import com.utn.udee.model.dto.MeasurementSenderDto;
+import com.utn.udee.model.projections.ConsumptionProjection;
 import com.utn.udee.model.projections.UserProjection;
 import com.utn.udee.repository.MeasurementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +32,19 @@ public class MeasurementService {
         return measurementRepository.findById(id).orElseThrow(MeasurementNotExistsException::new);
     }
 
-    public Measurement add(Measurement measurement) {
-        Measurement m  = measurementRepository.save(measurement);
+    public Measurement add(MeasurementSenderDto measurement, Meter meter) throws MeterNotExistsException {
+
+        Measurement newMeasurement = Measurement.builder().datetime(LocalDateTime.parse(measurement.getDate())).measurement(measurement.getValue()).price(meter.getAddress().getTariff().getTariff()*measurement.getValue()).meter(meter).build();
+        Measurement m  = measurementRepository.save(newMeasurement);
         return m;
     }
 
 
-    public Page<Measurement> findMeasurementsByMeter(Integer idMeter, Pageable p) {
+    public Page<Measurement> getMeasurementsByMeter(Integer idMeter, Pageable p) {
         return measurementRepository.findMeasurementByMeterId(idMeter, p);
     }
 
-    public Page getAllMeasurements(Pageable pageable) {
+    public Page<Measurement> getAllMeasurements(Pageable pageable) {
         return measurementRepository.findAll(pageable);
     }
 
@@ -65,8 +71,12 @@ public class MeasurementService {
     public List<Measurement> getRangeDateConsumption(Integer userId, LocalDateTime from, LocalDateTime to) {
           return measurementRepository.getConsumptionByRangeDate(userId,from,to);
     }
-    public Consumption getTotalRangeDateConsumption(Integer userId, LocalDateTime from, LocalDateTime to) {
+    public ConsumptionProjection getTotalRangeDateConsumption(Integer userId, LocalDateTime from, LocalDateTime to) {
 
         return measurementRepository.getTotalConsumptionByRangeDate(userId,from,to);
     }
+
+/*    public Page<Measurement> getAllMeasurementsByAddressId(Integer addressId, Pageable pageable) {
+      return  measurementRepository.findAllMeasurementsByAddressId(addressId,pageable);
+    }*/
 }
