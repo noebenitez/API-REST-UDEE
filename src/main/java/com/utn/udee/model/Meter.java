@@ -38,11 +38,11 @@ public class Meter {
     @NotNull(message="address associated to meter cannot be null")
     @JoinColumn(name="id_address")
     private Address address;
-    @JsonBackReference
+    @JsonManagedReference
     @OneToMany(mappedBy="meter", fetch=FetchType.LAZY)
     private List<Measurement> measurements;
-//    @OneToMany(fetch=FetchType.EAGER)
-//    private List<Invoice> invoices;
+/*    @OneToMany(fetch=FetchType.EAGER)
+    private List<Invoice> invoices;*/
 
 
 

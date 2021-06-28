@@ -1,11 +1,14 @@
 package com.utn.udee.controller;
+
 import com.utn.udee.exception.TariffExistsException;
 import com.utn.udee.exception.TariffNotExistsException;
+import com.utn.udee.exception.UserNotExistsException;
 import com.utn.udee.model.Tariff;
 import com.utn.udee.model.dto.TariffDto;
 import com.utn.udee.service.TariffService;
 import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -35,7 +39,7 @@ public class TariffController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
-    public ResponseEntity addTariff(@RequestBody TariffDto tariff) throws TariffExistsException {
+    public ResponseEntity addTariff(@RequestBody @Valid TariffDto tariff) throws TariffExistsException {
         Tariff tariffConverted = Tariff.builder()
                 .tariff(tariff.getTariff())
                 .tariffType(tariff.getTariffType())

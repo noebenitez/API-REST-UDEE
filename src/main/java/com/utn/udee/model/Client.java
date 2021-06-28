@@ -12,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Client extends User{
 
-    @OneToMany(mappedBy = "customer")
-    @JsonManagedReference(value = "customer-adress")
+    @JsonManagedReference(value = "customer-address")
+    @OneToMany(mappedBy = "customer", targetEntity = Address.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<Address> addressList;
 
     public Client(Integer id, String dni, String firstname, String lastname, String username, String password, List<Address> addressList) {

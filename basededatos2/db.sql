@@ -88,20 +88,19 @@ CREATE TABLE meters(
 
 CREATE TABLE invoices (
                           id INT NOT NULL AUTO_INCREMENT,
+                          id_meter INT NOT NULL,
                           id_customer INT NOT NULL,
-                          serial_number varchar(50) NOT NULL,
-                          tariff_type varchar(50) NOT NULL,
+                          id_tariff INT NOT NULL,
                           initial_measurement FLOAT,
                           final_measurement FLOAT,
                           initial_datetime datetime,
                           final_datetime datetime,
                           total_consumption FLOAT UNSIGNED NOT NULL,
                           total_to_paid FLOAT UNSIGNED NOT NULL,
-                          due_date datetime,
-                          payment_status varchar(50) NOT NULL,
-                          
                           constraint pk_invoice PRIMARY KEY (id),
+                          constraint fk_invoice_meter FOREIGN KEY (id_meter) references meters(id),
                           constraint fk_invoice_user FOREIGN KEY (id_customer) references users(id),
+                          constraint fk_invoice_tariff FOREIGN KEY (id_tariff) references tariffs(id)
 );
 
 CREATE TABLE measurements(

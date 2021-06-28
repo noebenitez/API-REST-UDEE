@@ -1,20 +1,18 @@
 package com.utn.udee.controller;
 
 import com.utn.udee.exception.MeasurementNotExistsException;
+import com.utn.udee.exception.MeterSameAddressExistsException;
 import com.utn.udee.exception.MeterNotExistsException;
 import com.utn.udee.model.Measurement;
 import com.utn.udee.model.Meter;
-import com.utn.udee.model.dto.MeasurementDto;
 import com.utn.udee.model.dto.MeterDto;
 import com.utn.udee.service.MeasurementService;
 import com.utn.udee.service.MeterService;
-import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -47,8 +44,7 @@ public class MeterController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PostMapping
-    public ResponseEntity addMeter(@RequestBody Meter meter)
-    {
+    public ResponseEntity addMeter(@RequestBody Meter meter) throws MeterSameAddressExistsException {
         meter.setSerialNumber(UUID.randomUUID().toString());
         Meter m =  meterService.add(meter);
         URI location = ServletUriComponentsBuilder
@@ -81,7 +77,7 @@ public class MeterController {
         return meterService.getAll(page,size);
     }*/
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<Page<Meter>> getAll(Pageable pageable)
     {
         Page p = meterService.getAll(pageable);

@@ -106,7 +106,7 @@ public class UserController {
 
     //4) Consulta de consumo por rango de fechas (el usuario va a ingresar un rango
 //            de fechas y quiere saber cuánto consumió en ese periodo en Kwh y dinero)
-    @PreAuthorize("hasRole('ROLE_CLIENT')" + "||   hasRole('ROLE_EMPLOYEE')" + "&& #userId == authentication.principal.id")
+    @PreAuthorize("hasRole('ROLE_CLIENT')"  + "&& #userId == authentication.principal.id")
     @GetMapping("{userId}/consumptions")
     public ResponseEntity<ConsumptionProjection> getTotalRangeDateConsumption(@PathVariable Integer userId, @RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime from, @RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime to) throws UserNotExistsException {
             return ResponseEntity.ok(userService.getTotalRangeDateConsumption(userId, from, to));
@@ -115,7 +115,7 @@ public class UserController {
     /***measurements***/
 
     //5) Consulta de mediciones por rango de fechas
-    @PreAuthorize("hasRole('ROLE_CLIENT')" + "||   hasRole('ROLE_EMPLOYEE')" + "&& #userId == authentication.principal.id")
+    @PreAuthorize("hasRole('ROLE_CLIENT')" + "&& #userId == authentication.principal.id" + "||   hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/{userId}/measurements")
     public ResponseEntity<List<MeasurementDto>> getRangeDateConsumption(@PathVariable Integer userId, @RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime from, @RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime to) throws UserNotExistsException {
 
@@ -125,7 +125,7 @@ public class UserController {
     //6) Consulta de mediciones de un domicilio por rango de fechas
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/measurements/addresses/{idAddress}")
-    public ResponseEntity<List<MeasurementDto>> getMeasurementsAddressDateRange(@PathVariable Integer idAddress, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime from, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime to) throws AddressNotExistsException {
+    public ResponseEntity<List<MeasurementDto>> getMeasurementsAddressDateRange(@PathVariable Integer idAddress, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime from, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime to) throws AddressNotExistsException {
         return ResponseEntityMaker.response(ListMapperDto.getListDto(modelMapper, userService.getMeasurementsFromDateRange(idAddress, from, to), MeasurementDto.class));
     }
 
@@ -136,15 +136,15 @@ public class UserController {
 
 
 //2) Consulta de facturas por rango de fechas
-    @PreAuthorize("hasRole('ROLE_CLIENT')" + "||   hasRole('ROLE_EMPLOYEE') " + "|| #userId == authentication.principal.id")
+    @PreAuthorize("hasRole('ROLE_CLIENT')" + "&& #userId == authentication.principal.id" + "||   hasRole('ROLE_EMPLOYEE') " )
     @GetMapping("/invoices/{userId}")
-    public ResponseEntity<List<InvoiceDto>> getInvoicesByRangeDate(@PathVariable Integer userId, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime from, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime to) throws UserNotExistsException {
+    public ResponseEntity<List<InvoiceDto>> getInvoicesByRangeDate(@PathVariable Integer userId, @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime from, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-ddHH:mm:ss") LocalDateTime to) throws UserNotExistsException {
             return ResponseEntityMaker.response(invoiceService.getInvoicesByRangeDate(userId, from, to));
     }
 
 
 //3) Consulta de deuda (Facturas impagas)
-@PreAuthorize("hasRole('ROLE_CLIENT')" + "||   hasRole('ROLE_EMPLOYEE') " + "&& #userId == authentication.principal.id")
+@PreAuthorize("hasRole('ROLE_CLIENT')" + "&& #userId == authentication.principal.id")
 @GetMapping("/invoices/{userId}/unpaid")
 public ResponseEntity<Page<InvoiceDto>> getUnpaidInvoices(@PathVariable Integer userId,Pageable p) throws UserNotExistsException {
     Page<InvoiceDto> page = (invoiceService.getUnpaidInvoices(userId,p)).map(invoice -> conversionService.convert(invoice, InvoiceDto.class));

@@ -18,7 +18,7 @@ public class Measurement {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
-    @JsonManagedReference
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="id_meter")
     @NotNull(message ="Meter associated cannot be null")
@@ -31,7 +31,7 @@ public class Measurement {
     @Column(name="m_datetime")
     @NotNull(message = "date and time cannot be null")
     private LocalDateTime datetime;
-//    @OneToOne
-//    @JoinColumn(name="id_invoice")
-//    private Invoice invoice;
+    @OneToOne
+    @JoinColumn(name="id_invoice")
+    private Invoice invoice;
 }

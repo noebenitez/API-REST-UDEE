@@ -2,20 +2,16 @@ package com.utn.udee.service;
 
 import com.utn.udee.exception.MeasurementNotExistsException;
 import com.utn.udee.exception.MeterNotExistsException;
+import com.utn.udee.exception.MeterSameAddressExistsException;
 import com.utn.udee.model.Measurement;
 import com.utn.udee.model.Meter;
-import com.utn.udee.model.dto.MeasurementDto;
 import com.utn.udee.repository.MeterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class MeterService {
@@ -29,20 +25,16 @@ public class MeterService {
         this.meterRepository=meterRepository;
     }
 
-    public Meter add(Meter meter) {
-        Meter m =  meterRepository.save(meter);
-        return m;
+    public Meter add(Meter meter) throws MeterSameAddressExistsException {
+        if (meterRepository.findMeterByAddress_Id(meter.getAddress().getId()).isPresent())
+            throw new MeterSameAddressExistsException();
+        return meterRepository.save(meter);
  }
 
     public Meter getById(Integer id) throws MeterNotExistsException {
         return meterRepository.findById(id).orElseThrow(MeterNotExistsException::new);
     }
-/*///ver sort
-    public PaginationResponse<Meter> getAll(Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Meter> meterPage = meterRepository.findAll(pageable); ///me devolvera una page de meter
-        return new PaginationResponse<>(meterPage.getContent(),meterPage.getTotalPages(),meterPage.getTotalElements());
-    }*/
+
 
     public Page<Meter> getAll(Pageable pageable)
     {
@@ -76,4 +68,5 @@ public class MeterService {
        else throw new MeterNotExistsException();
 
     }
+
 }

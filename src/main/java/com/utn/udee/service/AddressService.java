@@ -33,7 +33,7 @@ public class AddressService {
 
     public Address getById(Integer id) throws AddressNotExistsException {
         return addressRepository.findById(id)
-                .orElseThrow(() -> new AddressNotExistsException());
+                .orElseThrow(AddressNotExistsException::new);
     }
 
     public void deleteById(Integer id) throws AddressNotExistsException {
