@@ -16,6 +16,7 @@ public class Client extends User{
     @OneToMany(mappedBy = "customer", targetEntity = Address.class, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<Address> addressList;
 
+
     public Client(Integer id, String dni, String firstname, String lastname, String username, String password, List<Address> addressList) {
         super(id, dni, firstname, lastname, username, password);
         this.addressList = addressList;

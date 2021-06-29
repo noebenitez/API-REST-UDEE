@@ -7,8 +7,8 @@ DELIMITER $$
 CREATE TRIGGER tbi_measurement BEFORE INSERT ON measurements FOR EACH ROW
 BEGIN
     DECLARE vLastDatetime datetime;
-    DECLARE vLastMeasurement int;
-    DECLARE vTariff int;
+    DECLARE vLastMeasurement float;
+    DECLARE vTariff float;
     SELECT MAX(m_datetime) INTO vLastDatetime FROM measurements WHERE id_meter = new.id_meter AND m_datetime < new.m_datetime;
     SELECT tariff INTO vTariff FROM
         meters m INNER JOIN addresses a ON m.id_address = a.id
