@@ -92,7 +92,7 @@ public class MeasurementControllerTest {
         }
     }
 
-/*    @Test
+    @Test
     public void testGetAllOk()
     {
         //when
@@ -101,9 +101,8 @@ public class MeasurementControllerTest {
         ResponseEntity<List<MeasurementDto>> response = measurementController.getAll(aPageable());
         ///then
         assertEquals(HttpStatus.OK,response.getStatusCode());
-        assertEquals(aMeasurementDtoList,response.getBody());
-
-    }*/
+        assertEquals(aMeasurementDtoPage().getSize(),response.getBody().size());
+    }
 
 
 

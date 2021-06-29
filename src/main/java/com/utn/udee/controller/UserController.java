@@ -147,9 +147,9 @@ public class UserController {
 @PreAuthorize("hasRole('ROLE_CLIENT')" + "&& #userId == authentication.principal.id")
 @GetMapping("/invoices/{userId}/unpaid")
 public ResponseEntity<List<InvoiceDto>> getUnpaidInvoices(@PathVariable Integer userId,Pageable p) throws UserNotExistsException {
-    Page<InvoiceDto> page = (invoiceService.getUnpaidInvoices(userId,p)).map(invoice -> conversionService.convert(invoice, InvoiceDto.class));
-
-        return ResponseEntityMaker.response(page.getContent(),page);
+    Page page = invoiceService.getUnpaidInvoices(userId,p);
+    Page to = page.map(invoice -> conversionService.convert(invoice, InvoiceDto.class));
+        return ResponseEntityMaker.response(page.getContent(),to);
 }
 
 

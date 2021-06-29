@@ -63,8 +63,8 @@ public class MeasurementController {
     @GetMapping("")
     public ResponseEntity<List<MeasurementDto>> getAll(Pageable pageable)
     {
-        Page<Measurement> p = measurementService.getAllMeasurements(pageable);
-        Page<MeasurementDto> to= p.map(measurement -> conversionService.convert(measurement, MeasurementDto.class));
+        Page p = measurementService.getAllMeasurements(pageable);
+        Page to= p.map(measurement -> conversionService.convert(measurement, MeasurementDto.class));
         return ResponseEntityMaker.response(to.getContent(),to);
     }
 

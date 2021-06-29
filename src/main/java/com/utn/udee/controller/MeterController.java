@@ -8,6 +8,7 @@ import com.utn.udee.model.Meter;
 import com.utn.udee.model.dto.MeterDto;
 import com.utn.udee.service.MeasurementService;
 import com.utn.udee.service.MeterService;
+import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -25,8 +26,10 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/meters")
 public class MeterController {
+    private static final String METERS_PATH = "meters";
     private MeterService meterService;
     private MeasurementService measurementService;
+
     @Autowired
     private ConversionService conversionService;
 
@@ -42,12 +45,7 @@ public class MeterController {
     public ResponseEntity addMeter(@RequestBody Meter meter) throws MeterSameAddressExistsException {
         meter.setSerialNumber(UUID.randomUUID().toString());
         Meter m =  meterService.add(meter);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(m.getId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(EntityURLBuilder.buildURL(METERS_PATH,m.getId())).build();
     }
 
   /*  @GetMapping("/{id}")

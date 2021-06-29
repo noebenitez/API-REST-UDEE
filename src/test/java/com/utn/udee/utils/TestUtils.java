@@ -93,7 +93,7 @@ public class TestUtils {
     public static InvoiceDto anInvoiceDto = InvoiceDto.getInvoiceDto(anInvoice);
     public static List<InvoiceDto> anInvoiceDtoList = List.of(anInvoiceDto);
     public static Page<InvoiceDto> anInvoiceDtoPage() {
-        return new PageImpl<>(anInvoiceDtoList);
+        return new PageImpl<InvoiceDto>(anInvoiceDtoList);
     }
 
     public static Meter aMeter = new Meter(1,"1234","1222",aBrand,aModel,anAddress,null);

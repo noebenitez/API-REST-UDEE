@@ -32,7 +32,7 @@ public class MeterServiceTest {
         meterService = new MeterService(meterRepository);
     }
 
-  /*  @Test
+/*    @Test
     public void addOk() {
 
         when(meterRepository.findMeterByAddress_Id(anyInt())).thenReturn(Optional.empty());
@@ -44,8 +44,6 @@ public class MeterServiceTest {
         } catch (MeterSameAddressExistsException e) {
             Assertions.fail("This should not throw an exception");
         }
-
-
     }*/
 
     @Test

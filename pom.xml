@@ -51,10 +51,6 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.22</version>
@@ -74,11 +70,6 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
 		</dependency>
-        <dependency>
-            <groupId>com.utn</groupId>
-            <artifactId>udee</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-params</artifactId>
@@ -96,6 +87,7 @@
 				<!--Packages excludes from the test-->
 				<exclude>**/com/utn/udee/*</exclude>
 				<exclude>**/com/utn/udee/config/*</exclude>
+				<exclude>**/com/utn/udee/exception/*</exclude>
 				<exclude>**/com/utn/udee/model/dto/*</exclude>
 				<exclude>**/com/utn/udee/model/*</exclude>
 				<exclude>**/com/utn/udee/filter/*</exclude>
