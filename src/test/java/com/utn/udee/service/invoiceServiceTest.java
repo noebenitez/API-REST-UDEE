@@ -37,26 +37,26 @@ public class invoiceServiceTest {
         invoiceService = new InvoiceService(invoiceRepository,modelMapper,userService,addressService);
     }
 
-    @Test
+@Test
     public void testGetUnpaidInvoicesOk()
-    {
-        try {
-            when((Client)userService.getById(anyInt())).thenReturn((Client)aUserClient);
-            when(invoiceRepository.findAllByBilledToAndNotPaid(anyInt(),eq(aPageable()))).thenReturn(anInvoicePage());
-            Page<Invoice> p = invoiceService.getUnpaidInvoices(IDUSER,aPageable());
-            assertEquals(p.getContent(),anInvoicePage().getContent());
-            assertEquals(p.getSize(),anInvoicePage().getSize());
+{
+    try {
+        when((Client)userService.getById(anyInt())).thenReturn((Client)aUserClient);
+        when(invoiceRepository.findAllByBilledToAndNotPaid(anyInt(),eq(aPageable()))).thenReturn(anInvoicePage());
+        Page<Invoice> p = invoiceService.getUnpaidInvoices(IDUSER,aPageable());
+        assertEquals(p.getContent(),anInvoicePage().getContent());
+        assertEquals(p.getSize(),anInvoicePage().getSize());
 
-        } catch (UserNotExistsException e) {
-            Assertions.fail("This should not throw an exception");
-        }
-
+    } catch (UserNotExistsException e) {
+        Assertions.fail("This should not throw an exception");
     }
 
-    @Test
+}
+
+@Test
     public void testGetUnpaidInvoicesNotExists() throws UserNotExistsException {
-        when((Client)userService.getById(anyInt())).thenThrow(UserNotExistsException.class);
-        assertThrows(UserNotExistsException.class,()->{invoiceService.getUnpaidInvoices(IDUSER,aPageable());});
+    when((Client)userService.getById(anyInt())).thenThrow(UserNotExistsException.class);
+    assertThrows(UserNotExistsException.class,()->{invoiceService.getUnpaidInvoices(IDUSER,aPageable());});
     }
 
     @Test
