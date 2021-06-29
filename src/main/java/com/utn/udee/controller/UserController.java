@@ -146,7 +146,7 @@ public class UserController {
 //3) Consulta de deuda (Facturas impagas)
 @PreAuthorize("hasRole('ROLE_CLIENT')" + "&& #userId == authentication.principal.id")
 @GetMapping("/invoices/{userId}/unpaid")
-public ResponseEntity<Page<InvoiceDto>> getUnpaidInvoices(@PathVariable Integer userId,Pageable p) throws UserNotExistsException {
+public ResponseEntity<List<InvoiceDto>> getUnpaidInvoices(@PathVariable Integer userId,Pageable p) throws UserNotExistsException {
     Page<InvoiceDto> page = (invoiceService.getUnpaidInvoices(userId,p)).map(invoice -> conversionService.convert(invoice, InvoiceDto.class));
 
         return ResponseEntityMaker.response(page.getContent(),page);
@@ -158,7 +158,7 @@ public ResponseEntity<Page<InvoiceDto>> getUnpaidInvoices(@PathVariable Integer 
 //4 Consulta de facturas impagas por cliente y domicilio
 @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 @GetMapping("/invoices/{userId}/addresses/{addressId}")
-public ResponseEntity<Page<InvoiceDto>> getUnpaidInvoicesByUserAndAddress(@PathVariable Integer userId, @PathVariable Integer addressId,Pageable pageable) throws UserNotExistsException, AddressNotExistsException {
+public ResponseEntity<List<InvoiceDto>> getUnpaidInvoicesByUserAndAddress(@PathVariable Integer userId, @PathVariable Integer addressId,Pageable pageable) throws UserNotExistsException, AddressNotExistsException {
     Page p = invoiceService.getUnpaidInvoicesByUserAndAddress(userId,addressId,pageable);
     Page to = p.map(invoice -> conversionService.convert(invoice, InvoiceDto.class));
    return ResponseEntityMaker.response(to.getContent(),to);

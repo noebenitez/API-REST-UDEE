@@ -29,5 +29,6 @@ public class ModelService {
 
 
     public void deleteById(Integer id) {
+        modelRepository.deleteById(id);
     }
 }

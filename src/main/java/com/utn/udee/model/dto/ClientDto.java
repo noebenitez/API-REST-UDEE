@@ -1,5 +1,7 @@
 package com.utn.udee.model.dto;
 
+import com.utn.udee.model.Client;
+import com.utn.udee.model.Invoice;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +16,9 @@ public class ClientDto {
     String firstname;
     String lastname;
 
+
+    public static ClientDto getClientDto(Client client) {
+        return ClientDto.builder().dni(client.getDni()).firstname(client.getFirstname()).lastname(client.getLastname()).build();
+    }
 
 }

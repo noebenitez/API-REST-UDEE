@@ -28,12 +28,7 @@ public class MeterController {
     private MeterService meterService;
     private MeasurementService measurementService;
     @Autowired
-    private ConversionService conversionService; //interfaz del metodo convert, le pasamos source y target
-    ///por cada converter que tenemos o cada implementacion de converter
-    ///tengo un converter lo almacena., donde convierte personas a personasdto
-    ///una capa mas arriba me provee la interfaz que es la interfaz del conversionservice
-    ///es una unica instancia
-    ///se encarga de ir a buscar los converters/
+    private ConversionService conversionService;
 
     @Autowired
     public MeterController(MeterService meterService, MeasurementService measurementService)
@@ -100,10 +95,9 @@ public class MeterController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @DeleteMapping("/{idMeter}")
-    public ResponseEntity deleteById(@PathVariable Integer idMeter)
-    {
+    public ResponseEntity deleteById(@PathVariable Integer idMeter) throws MeterNotExistsException {
         meterService.deleteById(idMeter);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.accepted().build();
     }
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @PutMapping("/{idMeter}")

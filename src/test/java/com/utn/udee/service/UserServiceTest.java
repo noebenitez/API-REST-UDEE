@@ -4,21 +4,26 @@ import com.utn.udee.exception.*;
 import com.utn.udee.model.*;
 import com.utn.udee.model.dto.UserDto;
 import com.utn.udee.model.dto.UserDtoI;
+import com.utn.udee.model.projections.UserProjection;
 import com.utn.udee.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.utn.udee.utils.TestUtils.aUserClient;
-import static com.utn.udee.utils.TestUtils.aUsersDtoList;
+import static com.utn.udee.utils.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +33,8 @@ public class UserServiceTest {
     private AddressService addressService;
     private UserService userService;
     private MeasurementService measurementService;
+    private UserProjection aUserProjection;
+    private List<UserProjection> aUserProjectionList;
 
     @BeforeEach
     public void setUp(){
@@ -35,6 +42,17 @@ public class UserServiceTest {
         addressService = mock(AddressService.class);
         measurementService = mock(MeasurementService.class);
         userService = new UserService(userRepository,measurementService,addressService);
+
+        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+        aUserProjection = factory.createProjection(UserProjection.class);
+        aUserProjection.setUsername("NN");
+        aUserProjection.setFirstname("NNN");
+        aUserProjection.setLastname("MM");
+        aUserProjection.setSum(2.5f);
+        aUserProjection.setDni("1234");
+
+        aUserProjectionList = List.of(aUserProjection);
+
     }
 
     @Test
@@ -111,6 +129,50 @@ public class UserServiceTest {
         assertThrows(UserNotExistsException.class, ()->
                 userService.getById(4));
     }
+
+
+    @Test
+    public void testGetTopTenConsumersOk()
+    {
+        when(measurementService.getTop10Consumers(any(LocalDateTime.class),any(LocalDateTime.class))).thenReturn(aUserProjectionList);
+
+        List<UserProjection> users = userService.getTop10Consumers(LocalDateTime.now(),LocalDateTime.now());
+
+        ///then
+
+        assertEquals(aUserProjection.getDni(),users.get(0).getDni());
+        assertEquals(1,users.size());
+
+    }
+
+    @Test
+    public void testGetRangeDateConsumptionOk()
+    {
+        when(measurementService.getRangeDateConsumption(anyInt(),any(LocalDateTime.class),any(LocalDateTime.class))).thenReturn(aMeasurementList);
+        ///then
+        List<Measurement> measurements = userService.getRangeDateConsumption(IDUSER,LocalDateTime.now(),LocalDateTime.now());
+
+        assertEquals(aMeasurement.getId(),measurements.get(0).getId());
+        assertEquals(1,measurements.size());
+
+    }
+
+    @Test
+    public void testGetMeasurementsFromDateRangeOk()
+    {
+        try {
+            when(addressService.getById(anyInt())).thenReturn(anAddress);
+            when(measurementService.getMeasurementsByAddressRangeDate(anyInt(),any(LocalDateTime.class),any(LocalDateTime.class))).thenReturn(aMeasurementList);
+            List<Measurement> measurements = userService.getMeasurementsFromDateRange(IDADDRESS,LocalDateTime.now(),LocalDateTime.now());
+          ///then
+            assertEquals(aMeasurement.getId(),measurements.get(0).getId());
+            assertEquals(1,measurements.size());
+        } catch (AddressNotExistsException e) {
+            Assertions.fail("This should not throw an exception");
+        }
+    }
+
+
 
 
 }

@@ -12,6 +12,7 @@ import com.utn.udee.service.MeasurementService;
 import com.utn.udee.service.MeterService;
 import com.utn.udee.utils.EntityURLBuilder;
 import com.utn.udee.utils.ResponseEntityMaker;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,24 +34,26 @@ public class MeasurementController {
     private MeasurementService measurementService;
     private MeterService meterService;
     private ConversionService conversionService;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public MeasurementController(MeasurementService measurementService, MeterService meterService,ConversionService conversionService)
+    public MeasurementController(MeasurementService measurementService, MeterService meterService,ConversionService conversionService,ModelMapper modelMapper)
     {
         this.measurementService = measurementService;
         this.meterService=meterService;
         this.conversionService = conversionService;
+        this.modelMapper = modelMapper;
     }
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/{id}")
     public ResponseEntity<MeasurementDto> getById(@PathVariable Integer id) throws MeasurementNotExistsException
     {
          Measurement m = measurementService.getById(id);
-        return ResponseEntity.ok(MeasurementDto.getMeasurementDto(m));
+        return ResponseEntity.ok(modelMapper.map(m,MeasurementDto.class));
     }
 
     @PostMapping
-    public ResponseEntity addMeasurement(@RequestBody MeasurementSenderDto measurement) throws MeterNotExistsException {
+    public ResponseEntity addMeasurement(@RequestBody @Valid MeasurementSenderDto measurement) throws MeterNotExistsException {
         Meter meter = meterService.getbySerialNumber(measurement.getSerialNumber());
         Measurement m = measurementService.add(measurement,meter);
         return ResponseEntity.created(EntityURLBuilder.buildURL(MEASUREMENTS_PATH,m.getId())).build();
@@ -57,7 +61,7 @@ public class MeasurementController {
 
     @PreAuthorize("hasRole('ROLE_EMPLOYEE')")
     @GetMapping("")
-    public ResponseEntity<Page<MeasurementDto>> getAll(Pageable pageable)
+    public ResponseEntity<List<MeasurementDto>> getAll(Pageable pageable)
     {
         Page<Measurement> p = measurementService.getAllMeasurements(pageable);
         Page<MeasurementDto> to= p.map(measurement -> conversionService.convert(measurement, MeasurementDto.class));

@@ -53,12 +53,17 @@ public class MeterService {
 //        /// return measurementService.findMeasurementsByMeter(idMeter).stream().map(m -> MeasurementDto.builder().id(m.getId()).measurement(m.getMeasurement()).price(m.getPrice()).datetime(m.getDatetime()).invoice(m.getInvoice()).build()).collect(Collectors.toList());
 //    }
 
-    public void deleteById(Integer idMeter) {
+    public void deleteById(Integer idMeter) throws MeterNotExistsException {
+
+        meterRepository.findById(idMeter).orElseThrow(MeterNotExistsException::new);
         meterRepository.deleteById(idMeter);
     }
 
     public void updateMeter(Integer idMeter, Meter meter) throws MeterNotExistsException {
         Meter m = meterRepository.findById(idMeter).orElseThrow(MeterNotExistsException::new);
+        m.setBrand(meter.getBrand());
+        m.setModel(meter.getModel());
+        meterRepository.save(m);
 
     }
 

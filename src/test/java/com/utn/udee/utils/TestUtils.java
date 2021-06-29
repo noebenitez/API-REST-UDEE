@@ -1,10 +1,13 @@
 package com.utn.udee.utils;
 
 import com.utn.udee.model.*;
-import com.utn.udee.model.dto.AddressDto;
-import com.utn.udee.model.dto.TariffDto;
-import com.utn.udee.model.dto.UserDto;
+import com.utn.udee.model.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,8 +68,55 @@ public class TestUtils {
                     new UserDto(2, "33222111", "Joe", "Doe", "joe1")));
 
 
+    public static Integer IDUSER = 1;
+    public static Integer IDADDRESS= 1;
+    public static Integer IDMEASUREMENT=1;
+    public static Integer IDMETER = 1;
+    public static Integer IDBRAND = 1;
+    public static Integer IDMODEL = 1;
+
+    public static Model aModel = new Model(1,"model1");
+    public static ModelDto aModelDto = ModelDto.getModelDto(aModel);
+
+    public static Brand aBrand = new Brand(1,"brand1");
+    public static BrandDto aBrandDto =  BrandDto.getBrandDto(aBrand);
+
+
+    public static Invoice anInvoice = new Invoice(1,"1234",(Client)aUserClient,2.4f,2.5f,4.4f,5.5f,LocalDateTime.now(),LocalDateTime.now(),LocalDateTime.now(),TariffType.RESIDENTIAL,PaymentStatus.UNPAID);
+    public static List<Invoice> anInvoiceList() {
+        return List.of(anInvoice);
+    }
+    public static Page<Invoice> anInvoicePage()
+    {
+        return new PageImpl<>(anInvoiceList());
+    }
+    public static InvoiceDto anInvoiceDto = InvoiceDto.getInvoiceDto(anInvoice);
+    public static List<InvoiceDto> anInvoiceDtoList = List.of(anInvoiceDto);
+    public static Page<InvoiceDto> anInvoiceDtoPage() {
+        return new PageImpl<>(anInvoiceDtoList);
+    }
+
+    public static Meter aMeter = new Meter(1,"1234","1222",aBrand,aModel,anAddress,null);
+    public static MeterDto aMeterDto = MeterDto.getMeterDto(aMeter);
+    public static List<Meter> aMeterList = List.of(aMeter);
+    public static Page<Meter> aMeterPage() { return new PageImpl<>(aMeterList);}
+    public static List<MeterDto> aMeterDtoList = List.of(aMeterDto);
+    public static Page<MeterDto> aMeterDtoPage() { return new PageImpl<>(aMeterDtoList);}
+
+    public static Measurement aMeasurement = new Measurement(1,aMeter,2.1f,2.4f,LocalDateTime.now(),anInvoice);
+    public static MeasurementSenderDto aMeasurementSenderDto = MeasurementSenderDto.builder().date(LocalDateTime.now().toString()).password("1234").serialNumber("1234").value(22.3f).build();
+    public static MeasurementDto aMeasurementDto = MeasurementDto.builder().measurement(aMeasurement.getMeasurement()).id(aMeasurement.getId()).invoice(InvoiceDto.getInvoiceDto(aMeasurement.getInvoice())).datetime(aMeasurement.getDatetime()).price(aMeasurement.getPrice()).build();
+    public static List<MeasurementDto> aMeasurementDtoList = List.of(aMeasurementDto);
+    public static List<Measurement> aMeasurementList = List.of(aMeasurement);
+    public static Page<Measurement> aMeasurementPage()
+    {
+        return new PageImpl<>(aMeasurementList);
+    }
+    public static Page<MeasurementDto> aMeasurementDtoPage() { return new PageImpl<>(aMeasurementDtoList);}
 
 
 
-
+    public static Pageable aPageable() {
+        return PageRequest.of(0, 5);
+    }
 }

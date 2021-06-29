@@ -21,9 +21,9 @@ public class MeasurementDto {
     InvoiceDto invoice;
 
 
-    public static MeasurementDto getMeasurementDto(Measurement measurement) {
+/*    public static MeasurementDto getMeasurementDto(Measurement measurement) {
         return MeasurementDto.builder().id(measurement.getId()).measurement(measurement.getMeasurement()).price(measurement.getPrice()).datetime(measurement.getDatetime()).build();
-    }
+    }*/
 
 
 

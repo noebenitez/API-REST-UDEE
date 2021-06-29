@@ -1,5 +1,6 @@
 package com.utn.udee.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="models")
 public class Model {
